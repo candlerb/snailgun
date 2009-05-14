@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+# Copyright (C) Brian Candler 2009. Released under the Ruby licence.
+# This could be rewritten in C for even faster startup
+
+require 'socket'
+if ARGV[0] =~ /\A@/
+  sockname = ARGV.shift[1..-1]
+else
+  sockname = ENV['SNAILGUN_SOCK']
+end
+unless sockname
+  STDERR.puts <<EOS
+Unable to find path to snailgun socket.
+- did you run this in a session with a snailgun parent?
+- you can do '#{$0} @/path/to/sock ...'
+EOS
+  exit 1
+end
+server = UNIXSocket.open(sockname)
+server.send_io(STDIN)
+server.send_io(STDOUT)
+server.send_io(STDERR)
+args = Marshal.dump([ARGV, Dir.pwd])
+server.write [args.size].pack("N")
+server.write args
+trap('INT') { server.write('X'); exit 1 }
+rc = server.read(1).unpack("C").first
+exit rc

@@ -1,0 +1,54 @@
+#!/usr/bin/env ruby
+# Copyright (C) Brian Candler 2009. Released under the Ruby licence.
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
+require 'snailgun/server'
+require 'optparse'
+
+server = Snailgun::Server.new
+
+OptionParser.new do |opts|
+  opts.on("-I DIR", "add to load path") do |v|
+    $:.unshift v
+  end
+  opts.on("-r LIB", "require library") do |v|
+    require v
+  end
+  opts.on("--rails [VERSION]", "preload rails libraries") do |v|
+    #if File.exist?('vendor/rails')
+    #  require 'vendor/rails/railties/lib/initializer'
+    #else
+    require 'rubygems'
+    v ? (gem 'rails', v) : (gem 'rails')
+    # Ugh, the setup logic we want is in initializer; however config/boot.rb
+    # won't continue if Rails::Initializer is already defined
+    #require 'initializer'
+    require 'ruby_version_check'
+    #require 'active_record'
+    require 'action_controller'
+    require 'action_view'
+    require 'action_mailer'
+    require 'active_resource'
+    #ActiveRecord.load_all!     # TODO: exclude frameworks like this
+    ActionController.load_all!
+    ActionView.load_all!
+    ActionMailer.load_all!
+    ActiveResource  #.load_all!
+    require 'tsort'
+  end
+  opts.on("--rake [VERSION]", "preload rake libaries") do |v|
+    require 'rubygems'
+    v ? (gem 'rake', v) : (gem 'rake')
+    require 'rbconfig'
+    Config::CONFIG['bindir'] = File.expand_path(File.dirname(__FILE__))
+    Config::CONFIG['ruby_install_name'] = 'fruby'
+    require 'rubygems'
+    require 'rake'
+    require 'rake/testtask'
+    require 'rake/rdoctask'
+  end
+  opts.on("-s SOCKPATH", "choose socket location") do |v|
+    server.sockname = v
+  end
+end.parse!
+
+server.interactive!

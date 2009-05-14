@@ -1,0 +1,8 @@
+Work out why programs which interact on stdin (e.g. script/console) cause
+the process to stop - need 'fg' to continue
+
+Fix the startup code so that vendor/rails is detected and added into the
+load path appropriately
+
+A lot of work is still done in the Rails initializer. Is there any more we
+can preload without affecting the behaviour of the app?

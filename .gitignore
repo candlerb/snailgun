@@ -1,0 +1,5 @@
+*~
+*.orig
+tmp
+doc/rdoc
+coverage
