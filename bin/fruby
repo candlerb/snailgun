@@ -22,9 +22,9 @@ server = UNIXSocket.open(sockname)
 server.send_io(STDIN)
 server.send_io(STDOUT)
 server.send_io(STDERR)
-args = Marshal.dump([ARGV, Dir.pwd])
+args = Marshal.dump([ARGV, Dir.pwd, Process.getpgrp])
 server.write [args.size].pack("N")
 server.write args
 trap('INT') { server.write('X'); exit 1 }
-rc = server.read(1).unpack("C").first
+rc = (server.read(1) || "\000").unpack("C").first
 exit rc

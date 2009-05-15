@@ -1,8 +1,6 @@
-Work out why programs which interact on stdin (e.g. script/console) cause
-the process to stop - need 'fg' to continue
-
 Replacements for script/console, script/runner etc which choose the correct
-socket and invoke commands/xxx in fruby
+socket and invoke commands/xxx in fruby. Fix script/console so that it
+doesn't exec() a completely new instance of irb.
 
 frake to choose the correct socket by duplicating logic from the
 :environment task. Could also have a separate forking process for frake

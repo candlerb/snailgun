@@ -84,9 +84,21 @@ line). This is so that the request is dispatched to the correct environment.
 
 Bugs and limitations
 --------------------
-`fruby script/console` stops the process when it reads from stdin. You need
-to type `fg` to continue. Ditto for fruby reading from stdin. Haven't worked
-out why yet.
+You need to specify the environment explicitly for each command, rather than
+letting the script choose its default or select it from its command-line args.
+
+    # Right
+    RAILS_ENV=test frake test:units
+    RAILS_ENV=development fruby script/server
+    RAILS_ENV=production fruby script/server
+
+    # Wrong
+    frake test:units
+    fruby script/server
+    fruby script/server production
+
+`fruby script/console` doesn't give any speedup, because script/console
+uses exec to invoke irb. Needs a replacement script/console.
 
 The environment is not currently passed across the socket to the ruby
 process. This means it's not usable as a fast CGI replacement.

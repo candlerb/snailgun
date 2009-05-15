@@ -25,8 +25,12 @@ module Snailgun
             STDOUT.reopen(client.recv_io)
             STDERR.reopen(client.recv_io)
             nbytes = client.read(4).unpack("N").first
-            args, cwd = Marshal.load(client.read(nbytes))
+            args, cwd, pgid = Marshal.load(client.read(nbytes))
             Dir.chdir(cwd)
+            begin
+              Process.setpgid(0, pgid)
+            rescue Errno::EPERM
+            end
             thc = Thread.current
             Thread.new { client.read(1); thc.kill }
             exit_status = 0
