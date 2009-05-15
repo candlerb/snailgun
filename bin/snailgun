@@ -4,51 +4,83 @@ $:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 require 'snailgun/server'
 require 'optparse'
 
-server = Snailgun::Server.new
+sockpath = nil
+mode = nil
+envs = "test,development"
+rake = false
+verbose = false
+
+def fix_rake
+  require 'rbconfig'
+  Config::CONFIG['bindir'] = File.expand_path(File.dirname(__FILE__))
+  Config::CONFIG['ruby_install_name'] = 'fruby'
+  require 'rubygems'
+  require 'rake'
+  require 'rake/testtask'
+  require 'rake/rdoctask'
+end
 
 OptionParser.new do |opts|
-  opts.on("-I DIR", "add to load path") do |v|
-    $:.unshift v
-  end
-  opts.on("-r LIB", "require library") do |v|
-    require v
-  end
-  opts.on("--rails [VERSION]", "preload rails libraries") do |v|
-    #if File.exist?('vendor/rails')
-    #  require 'vendor/rails/railties/lib/initializer'
-    #else
-    require 'rubygems'
-    v ? (gem 'rails', v) : (gem 'rails')
-    # Ugh, the setup logic we want is in initializer; however config/boot.rb
-    # won't continue if Rails::Initializer is already defined
-    #require 'initializer'
-    require 'ruby_version_check'
-    require 'active_record'
-    require 'action_controller'
-    require 'action_view'
-    require 'action_mailer'
-    require 'active_resource'
-    ActiveRecord.load_all!     # TODO: exclude frameworks selectively
-    ActionController.load_all!
-    ActionView.load_all!
-    ActionMailer.load_all!
-    ActiveResource  #.load_all!
-    require 'tsort'
-  end
-  opts.on("--rake [VERSION]", "preload rake libaries") do |v|
-    require 'rubygems'
-    v ? (gem 'rake', v) : (gem 'rake')
-    require 'rbconfig'
-    Config::CONFIG['bindir'] = File.expand_path(File.dirname(__FILE__))
-    Config::CONFIG['ruby_install_name'] = 'fruby'
-    require 'rubygems'
-    require 'rake'
-    require 'rake/testtask'
-    require 'rake/rdoctask'
-  end
-  opts.on("-s SOCKPATH", "choose socket location") do |v|
-    server.sockname = v
-  end
+  opts.on("-I DIR", "add to load path")		{ |v| $:.unshift v }
+  opts.on("-r LIB", "require library")		{ |v| require v }
+  opts.on("--rails [ENVS]", "rails mode")	{ |v| mode = :rails; envs = v }
+  opts.on("--ruby [SOCKPATH]", "ruby mode")	{ |v| mode = :ruby; sockpath = v }
+  opts.on("--rake", "add rake support")		{ rake = true }
+  opts.on("-v", "--verbose", "show progress")	{ verbose = true }
 end.parse!
 
-server.interactive!
+mode ||= File.exist?("config/boot.rb") ? :rails : :ruby
+
+STDERR.puts "Starting in #{mode} mode" if verbose
+case mode
+when :ruby
+  unless sockpath
+    dir = File.join(ENV['HOME'], '.snailgun')
+    begin
+      Dir.mkdir dir, 0700
+    rescue Errno::EEXIST
+      File.chmod 0700, dir
+    end
+    sockpath = File.join dir, $$.to_s
+  end
+  fix_rake if rake
+  server = Snailgun::Server.new(sockpath)
+  server.interactive!
+
+when :rails
+  conf = File.expand_path('config/boot.rb')
+  unless File.exist?(conf)
+    raise '#{conf} does not exist, cannot continue'
+  end
+  sockdir = File.expand_path('tmp/sockets/snailgun')
+  begin
+    Dir.mkdir sockdir, 0700
+  rescue Errno::EEXIST
+    File.chmod 0700, sockdir
+  end
+  pids = {}
+  fix_rake   # TODO: separate process for rake (but then need to choose right RAILS_ENV)
+  envs.split(/\s*,\s*/).uniq.each do |env|
+    pids[env] = fork do
+      ENV['RAILS_ENV'] = env
+      load conf
+      require RAILS_ROOT + '/config/environment'
+      if Rails.configuration.cache_classes
+        STDERR.puts <<EOS
+WARNING: Snailgun doesn't work well with `cache_classes`. Strongly recommend
+`config.cache_classes = false` in config/environments/#{env}.rb
+EOS
+      end
+      server = Snailgun::Server.new("#{sockdir}/#{env}")
+      STDERR.puts "Started server for #{env}" if verbose
+      server.run
+    end
+  end
+  STDERR.puts "Use 'exit' to terminate snailgun"
+  Snailgun::Server.shell
+  pids.each do |env,pid|
+    Process.kill('TERM',pid)
+  end
+  # TODO: wait a few secs for them to die, 'KILL' if required
+  STDERR.puts "Snailgun ended"
+end

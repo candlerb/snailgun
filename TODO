@@ -1,11 +1,10 @@
+Work out why frake test doesn't run any tests
+
 Work out why programs which interact on stdin (e.g. script/console) cause
 the process to stop - need 'fg' to continue
 
-Fix the startup code so that vendor/rails is detected and added into the
-load path appropriately
+Replacements for script/console, script/runner etc which choose the correct
+socket and invoke commands/xxx in fruby
 
-A lot of work is still done in the Rails initializer. Is there any more we
-can preload without affecting the behaviour of the app?
-
-Fix default security: create socket mode 0700, or inside a directory mode
-0700.
+frake to choose the correct socket by duplicating logic from the
+:environment task. Could also have a separate forking process for frake

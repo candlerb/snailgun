@@ -2,5 +2,7 @@
 # Copyright (C) Brian Candler 2009. Released under the Ruby licence.
 # Here we run rake within a pre-forked ruby process
 
-ARGV[0,0] = ["-eRake.application.run", "--"]
+pos = 0
+pos = 1 if ARGV[0] =~ /\A@./
+ARGV[pos,0] = ["-rrake", "-eRake.application.run", "--"]
 load File.join(File.dirname(__FILE__), "fruby")

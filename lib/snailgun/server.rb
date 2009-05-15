@@ -7,8 +7,8 @@ module Snailgun
   class Server
     attr_accessor :sockname
 
-    def initialize
-      @sockname = "/tmp/snailgun#{$$}"
+    def initialize(sockname = nil)
+      @sockname = sockname || "/tmp/snailgun#{$$}"
       yield self if block_given?
     end
 
@@ -65,7 +65,7 @@ module Snailgun
       end
     end
     
-    def shell
+    def self.shell
       system("bash -l")  # TODO: configurable
     end
 
@@ -74,10 +74,10 @@ module Snailgun
     def interactive!
       ENV['SNAILGUN_SOCK'] = @sockname
       pid = Process.fork {
-        STDERR.puts "Snailgun starting on #{sockname}"
+        STDERR.puts "Snailgun starting on #{sockname} - 'exit' to end"
         run
       }
-      shell
+      self.class.shell
       Process.kill('TERM',pid)
       # TODO: wait a few secs for it to die, 'KILL' if required
       STDERR.puts "Snailgun ended"
