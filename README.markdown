@@ -3,8 +3,8 @@ Snailgun
 
 This is a highly experimental, proof-of-concept piece of code which preloads
 libraries into a Ruby process, and then forks that process whenever a new
-Ruby interpreter is required. The idea is to reduce the slooooow startup of
-Ruby apps which require a large number of libraries.
+command-line Ruby interpreter is required. The idea is to reduce the
+slooooow startup of Ruby apps which require a large number of libraries.
 
 In the case of Rails, separate processes are started for each of the
 environments you are interested in (by default "test,development"), since
@@ -13,6 +13,7 @@ each may be configured differently.
 Example 1: standalone
 ---------------------
 
+    # WITHOUT SNAILGUN
     $ time ruby -rubygems -e 'require "active_support"' -e 'puts "".blank?'
     true
 
@@ -20,6 +21,7 @@ Example 1: standalone
     user	0m1.424s
     sys 	0m0.168s
 
+    # WITH SNAILGUN
     $ bin/snailgun -rubygems -ractive_support
     Snailgun starting on /home/brian/.snailgun/14781 - 'exit' to end
     $ time bin/fruby -e 'puts "".blank?'
@@ -41,9 +43,10 @@ Example 2: inside a rails app
     $ cd testapp
     $ vi config/environments/test.rb
     ... set config.cache_classes = false
-    $ ~/git/snailgun/bin/snailgun
+    $ snailgun
     Use 'exit' to terminate snailgun
-    Snailgun starting on /tmp/snailgun21717
+
+    # WITHOUT SNAILGUN
     $ time script/runner 'puts 1+2'
     3
 
@@ -51,14 +54,15 @@ Example 2: inside a rails app
     user	0m4.716s
     sys 	0m0.680s
 
-    $ time RAILS_ENV=development ~/git/snailgun/bin/fruby script/runner 'puts 1+2'
+    # WITH SNAILGUN
+    $ time RAILS_ENV=development fruby script/runner 'puts 1+2'
     3
 
     real	0m0.169s
     user	0m0.040s
     sys 	0m0.008s
 
-    $ time RAILS_ENV=test ~/git/snailgun/bin/frake -T
+    $ time RAILS_ENV=test frake -T
     ....
     real	0m0.477s
     user	0m0.028s
@@ -69,22 +73,20 @@ Example 2: inside a rails app
     Snailgun ended
     $ 
 
+To run your test suite, use `RAILS_ENV=test frake test`. If you get an error
+about a missing socket, this may mean that snailgun hasn't finished loading
+your Rails environments yet. Use 'snailgun -v' if you wish to be notified
+when the environments have been loaded.
+
 Note that for now, you need to set the appropriate environment before
 starting fruby/frake (or pass `@tmp/sockets/snailgun/xxxx` on the command
-line). It should be possible to fix this by modifing script/* and
-duplicating some of the logic from environment.rb in frake.
+line). This is so that the request is dispatched to the correct environment.
 
 Bugs and limitations
 --------------------
-For some reason, `frake test:units` doesn't seem to run any tests :-(
-Haven't worked out why yet.
-
 `fruby script/console` stops the process when it reads from stdin. You need
 to type `fg` to continue. Ditto for fruby reading from stdin. Haven't worked
 out why yet.
-
-The ruby child process doesn't have a supervisor parent, which means if
-it dies using 'exit' we don't get the status code.
 
 The environment is not currently passed across the socket to the ruby
 process. This means it's not usable as a fast CGI replacement.
@@ -92,6 +94,9 @@ process. This means it's not usable as a fast CGI replacement.
 Only works with Linux/BSD systems, due to use of passing open file
 descriptors across a socket. It could perhaps be made more portable by
 proxying stdin/stdout/stderr across the socket instead.
+
+In Rails, you need to beware that any changes to your `config/environment*`
+will not be reflected until you stop and restart snailgun.
 
 Licence
 -------

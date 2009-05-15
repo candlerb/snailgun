@@ -64,7 +64,8 @@ when :rails
     pids[env] = fork do
       ENV['RAILS_ENV'] = env
       load conf
-      require RAILS_ROOT + '/config/environment'
+      require File.expand_path(RAILS_ROOT + '/config/environment')
+      require 'test_help' if env == 'test'   # drastic speedup
       if Rails.configuration.cache_classes
         STDERR.puts <<EOS
 WARNING: Snailgun doesn't work well with `cache_classes`. Strongly recommend

@@ -1,5 +1,3 @@
-Work out why frake test doesn't run any tests
-
 Work out why programs which interact on stdin (e.g. script/console) cause
 the process to stop - need 'fg' to continue
 
@@ -8,3 +6,7 @@ socket and invoke commands/xxx in fruby
 
 frake to choose the correct socket by duplicating logic from the
 :environment task. Could also have a separate forking process for frake
+
+Make it work with autotest (from ZenTest)
+
+Turn into a gem and/or plugin

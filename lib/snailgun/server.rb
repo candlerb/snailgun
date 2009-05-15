@@ -1,5 +1,8 @@
 # Copyright (C) Brian Candler 2009. Released under the Ruby licence.
 
+# Our at_exit handler must be called *last*
+at_exit { $SNAILGUN_EXIT.call if $SNAILGUN_EXIT }
+
 require 'socket'
 require 'optparse'
 
@@ -26,11 +29,15 @@ module Snailgun
             Dir.chdir(cwd)
             thc = Thread.current
             Thread.new { client.read(1); thc.kill }
+            exit_status = 0
+            $SNAILGUN_EXIT = lambda { client.write [exit_status].pack("C") }
             start_ruby(args)
-            client.write "\000"
+          rescue SystemExit => e
+            exit_status = e.status
+            raise  # for the benefit of Test::Unit
           rescue Exception => e
             STDERR.puts "#{e}\n\t#{e.backtrace.join("\n\t")}"
-            client.write "\001"
+            exit 1
           end
         end
         client.close
