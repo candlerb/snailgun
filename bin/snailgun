@@ -23,12 +23,12 @@ OptionParser.new do |opts|
     # won't continue if Rails::Initializer is already defined
     #require 'initializer'
     require 'ruby_version_check'
-    #require 'active_record'
+    require 'active_record'
     require 'action_controller'
     require 'action_view'
     require 'action_mailer'
     require 'active_resource'
-    #ActiveRecord.load_all!     # TODO: exclude frameworks like this
+    ActiveRecord.load_all!     # TODO: exclude frameworks selectively
     ActionController.load_all!
     ActionView.load_all!
     ActionMailer.load_all!

@@ -6,3 +6,6 @@ load path appropriately
 
 A lot of work is still done in the Rails initializer. Is there any more we
 can preload without affecting the behaviour of the app?
+
+Fix default security: create socket mode 0700, or inside a directory mode
+0700.
