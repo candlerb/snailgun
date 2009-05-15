@@ -69,7 +69,7 @@ module Snailgun
         opts.on("-r LIB") do |v|
           require v
         end
-      end.parse!(args)
+      end.order!(args)
 
       ARGV.replace(args)
       if !e.empty?
