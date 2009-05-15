@@ -31,10 +31,16 @@ module Snailgun
               Process.setpgid(0, pgid)
             rescue Errno::EPERM
             end
-            thc = Thread.current
-            Thread.new { client.read(1); thc.kill }
             exit_status = 0
-            $SNAILGUN_EXIT = lambda { client.write [exit_status].pack("C") }
+            $SNAILGUN_EXIT = lambda {
+              begin
+                client.write [exit_status].pack("C")
+              rescue Errno::EPIPE
+              end
+            }
+            #This doesn't work in 1.8.6:
+            #Thread.new { client.read(1); Thread.main.raise Interrupt }
+            Thread.new { client.read(1); exit 1 }
             start_ruby(args)
           rescue SystemExit => e
             exit_status = e.status

@@ -25,6 +25,10 @@ server.send_io(STDERR)
 args = Marshal.dump([ARGV, Dir.pwd, Process.getpgrp])
 server.write [args.size].pack("N")
 server.write args
-trap('INT') { server.write('X'); exit 1 }
-rc = (server.read(1) || "\000").unpack("C").first
-exit rc
+begin
+  rc = (server.read(1) || "\000").unpack("C").first
+  exit rc
+rescue Interrupt
+  server.write('X')
+  exit 1
+end
