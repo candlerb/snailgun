@@ -73,14 +73,17 @@ Example 2: inside a rails app
     Snailgun ended
     $ 
 
-To run your test suite, use `RAILS_ENV=test frake test`. If you get an error
-about a missing socket, this may mean that snailgun hasn't finished loading
-your Rails environments yet. Use 'snailgun -v' if you wish to be notified
-when the environments have been loaded.
+To run your test suite, use `RAILS_ENV=test frake test`.
 
 Note that for now, you need to set the appropriate environment before
 starting fruby/frake (or pass `@tmp/sockets/snailgun/xxxx` on the command
 line). This is so that the request is dispatched to the correct environment.
+
+Snailgun wil take several seconds to be ready to process requests. Use
+'snailgun -v' if you wish to be notified when it is ready.
+
+By default, only 'development' and 'test' environments are loaded. You can
+override this with `snailgun --rails test,development,production`
 
 Bugs and limitations
 --------------------

@@ -12,13 +12,13 @@ module Snailgun
 
     def initialize(sockname = nil)
       @sockname = sockname || "/tmp/snailgun#{$$}"
+      File.delete(@sockname) rescue nil
+      @socket = UNIXServer.open(@sockname)
       yield self if block_given?
     end
 
     def run
-      File.delete(@sockname) rescue nil
-      server = UNIXServer.open(@sockname)
-      while client = server.accept
+      while client = @socket.accept
         fork do
           begin
             STDIN.reopen(client.recv_io)

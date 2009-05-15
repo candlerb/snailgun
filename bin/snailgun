@@ -62,6 +62,7 @@ when :rails
   fix_rake   # TODO: separate process for rake (but then need to choose right RAILS_ENV)
   envs.split(/\s*,\s*/).uniq.each do |env|
     pids[env] = fork do
+      server = Snailgun::Server.new("#{sockdir}/#{env}")
       ENV['RAILS_ENV'] = env
       load conf
       require File.expand_path(RAILS_ROOT + '/config/environment')
@@ -72,7 +73,6 @@ WARNING: Snailgun doesn't work well with `cache_classes`. Strongly recommend
 `config.cache_classes = false` in config/environments/#{env}.rb
 EOS
       end
-      server = Snailgun::Server.new("#{sockdir}/#{env}")
       STDERR.puts "Started server for #{env}" if verbose
       server.run
     end
