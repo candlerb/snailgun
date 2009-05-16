@@ -9,6 +9,8 @@ elsif ENV['SNAILGUN_SOCK']
   sockname = ENV['SNAILGUN_SOCK']
 elsif ENV['RAILS_ENV']
   sockname = "tmp/sockets/snailgun/#{ENV['RAILS_ENV']}"
+elsif ENV['MERB_ENV']
+  sockname = "tmp/sockets/snailgun/#{ENV['MERB_ENV']}"
 end
 unless sockname
   STDERR.puts <<EOS
