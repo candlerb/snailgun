@@ -29,7 +29,13 @@ OptionParser.new do |opts|
   opts.on("-v", "--verbose", "show progress")	{ verbose = true }
 end.parse!
 
-mode ||= File.exist?("config/boot.rb") ? :rails : :ruby
+mode ||= if File.exist?("config/boot.rb")
+           :rails
+         elsif File.exist?("config/init.rb")
+           :merb
+         else
+           :ruby
+         end
 
 STDERR.puts "Starting in #{mode} mode" if verbose
 case mode
@@ -73,6 +79,42 @@ WARNING: Snailgun doesn't work well with `cache_classes`. Strongly recommend
 `config.cache_classes = false` in config/environments/#{env}.rb
 EOS
       end
+      STDERR.puts "Started server for #{env}" if verbose
+      server.run
+    end
+  end
+  STDERR.puts "Use 'exit' to terminate snailgun"
+  Snailgun::Server.shell
+  pids.each do |env,pid|
+    Process.kill('TERM',pid)
+  end
+  # TODO: wait a few secs for them to die, 'KILL' if required
+  STDERR.puts "Snailgun ended"
+
+when :merb
+  conf = File.expand_path('config/init.rb')
+  unless File.exist?(conf)
+    raise '#{conf} does not exist, cannot continue'
+  end
+  sockdir = File.expand_path('tmp/sockets/snailgun')
+  begin
+    require 'fileutils'
+    FileUtils.mkdir_p sockdir
+  ensure
+    File.chmod 0700, sockdir
+  end
+  pids = {}
+  fix_rake   # TODO: separate process for rake (but then need to choose right RAILS_ENV)
+  envs.split(/\s*,\s*/).uniq.each do |env|
+    pids[env] = fork do
+      server = Snailgun::Server.new("#{sockdir}/#{env}")
+      ENV['MERB_ENV'] = env
+
+      require 'rubygems'
+      gem 'merb-core'
+      require 'merb'
+      Merb.start_environment([env])
+
       STDERR.puts "Started server for #{env}" if verbose
       server.run
     end
