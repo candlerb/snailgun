@@ -73,14 +73,14 @@ module Snailgun
 
       ARGV.replace(args)
       if !e.empty?
-        $0.replace('-e') rescue ($0 = '-e')
+        $0 = '-e'
         e.each { |expr| eval(expr, TOPLEVEL_BINDING) }
       elsif ARGV.empty?
-        $0.replace('-') rescue ($0 = '-e')
+        $0 = '-'
         eval(STDIN.read, TOPLEVEL_BINDING)
       else
         cmd = ARGV.shift
-        $0.replace(cmd) rescue ($0 = cmd)
+        $0 = cmd
         load(cmd)
       end
     end

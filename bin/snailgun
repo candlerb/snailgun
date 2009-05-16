@@ -66,7 +66,7 @@ when :rails
       ENV['RAILS_ENV'] = env
       load conf
       require File.expand_path(RAILS_ROOT + '/config/environment')
-      require 'test_help' if env == 'test'   # drastic speedup
+      require 'test_help' if env == 'test'   # drastic speedup, although running rake gives spurious empty test suite
       if Rails.configuration.cache_classes
         STDERR.puts <<EOS
 WARNING: Snailgun doesn't work well with `cache_classes`. Strongly recommend
