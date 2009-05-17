@@ -7,11 +7,16 @@ if ARGV[0] =~ /\A@/
   sockname = ARGV.shift[1..-1]
 elsif ENV['SNAILGUN_SOCK']
   sockname = ENV['SNAILGUN_SOCK']
-elsif ENV['RAILS_ENV']
-  sockname = "tmp/sockets/snailgun/#{ENV['RAILS_ENV']}"
-elsif ENV['MERB_ENV']
-  sockname = "tmp/sockets/snailgun/#{ENV['MERB_ENV']}"
+elsif File.directory?('tmp/sockets/snailgun')
+  env = ENV['RAILS_ENV'] || ENV['MERB_ENV']
+  unless env
+    # Normally default to development: see railties/lib/tasks/misc.rake
+    env = $DEFAULT_ENV || 'development'
+    STDERR.puts "Snailgun assuming environment '#{env}'"
+  end
+  sockname = "tmp/sockets/snailgun/#{env}"
 end
+
 unless sockname
   STDERR.puts <<EOS
 Unable to find path to snailgun socket.
@@ -20,6 +25,7 @@ Unable to find path to snailgun socket.
 EOS
   exit 1
 end
+
 server = UNIXSocket.open(sockname)
 server.send_io(STDIN)
 server.send_io(STDOUT)

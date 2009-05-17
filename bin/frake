@@ -2,6 +2,19 @@
 # Copyright (C) Brian Candler 2009. Released under the Ruby licence.
 # Here we run rake within a pre-forked ruby process
 
+# Pre-parse environment - see collect_tasks in rake/lib/rake.rb
+ARGV.each do |arg|
+  if arg =~ /^(\w+)=(.*)$/
+    ENV[$1] = $2
+  end
+end
+
+# Make a guess at the correct environment
+if File.exist?("config/boot.rb") || File.exist?("config/init.rb")
+  # Rails: default task is 'test'
+  $DEFAULT_ENV='test' if ARGV.find { |arg| arg =~ /\btest\b/ } || !ARGV.find { |arg| arg !~ /^-/ }
+end
+
 pos = 0
 pos = 1 if ARGV[0] =~ /\A@./
 ARGV[pos,0] = ["-rrake", "-eRake.application.run", "--"]
