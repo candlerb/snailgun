@@ -102,7 +102,10 @@ descriptors across a socket.
 
 Because fruby has to choose the environment to dispatch the request to
 before it is run, the default choice may be wrong and you may have to
-override it using an environment variable.
+override it using an environment variable. IT'S POSSIBLE YOU COULD LOSE
+DATA FROM YOUR DEVELOPMENT DATABASE IF YOU RUN A 'TEST'-TYPE TASK BUT
+SNAILGUN APPLIES IT TO THE DEFAULT 'DEVELOPMENT' ENVIRONMENT. If your
+development database contains useful data, keep it backed up.
 
     # Wrong
     fruby script/server production
