@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+# Copyright (C) Brian Candler 2009. Released under the Ruby licence.
+
+ENV['RAILS_ENV'] = ARGV.shift if ARGV[0] =~ /^\w/
+
+ARGV[0,0] = [
+  "-rirb",
+  "-rirb/completion",
+  "-rconsole_app",
+  "-rconsole_with_helpers",
+  "-eIRB.start", "--", "--simple-prompt"
+]
+load File.join(File.dirname(__FILE__), "fruby")

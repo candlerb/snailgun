@@ -1,7 +1,3 @@
-Replacements for script/console, script/runner etc which choose the correct
-socket and invoke commands/xxx in fruby. Fix script/console so that it
-doesn't exec() a completely new instance of irb.
-
 Make it work with autotest (from ZenTest)
 
 Turn into a gem and/or plugin

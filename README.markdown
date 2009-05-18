@@ -110,8 +110,8 @@ override it using an environment variable.
     # Right
     RAILS_ENV=production fruby script/server
 
-`fruby script/console` doesn't yet give any speedup, because script/console
-uses exec to invoke irb. Needs a replacement script/console.
+`fruby script/console` doesn't give any speedup, because script/console uses
+exec to invoke irb.  Use the supplied `fconsole` instead.
 
 The environment is not currently passed across the socket to the ruby
 process. This means it's not usable as a fast CGI replacement.
