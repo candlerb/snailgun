@@ -12,7 +12,7 @@ end
 # Make a guess at the correct environment
 if File.exist?("config/boot.rb") || File.exist?("config/init.rb")
   # Rails: default task is 'test'
-  $DEFAULT_ENV='test' if ARGV.find { |arg| arg =~ /\btest\b/ } || !ARGV.find { |arg| arg !~ /^-/ }
+  $DEFAULT_ENV='test' if ARGV.find { |arg| arg =~ /\b(test|spec)\b/ } || !ARGV.find { |arg| arg !~ /^-/ }
 end
 
 pos = 0
