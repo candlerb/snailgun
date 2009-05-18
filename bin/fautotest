@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+# Copyright (C) Brian Candler 2009. Released under the Ruby licence.
+
+# shortcut for: RAILS_ENV=test fruby /path/to/autotest
+
+ENV["RAILS_ENV"] = "test"
+Test::Unit.run = true if defined?(Test::Unit) && Test::Unit.respond_to?(:run=)
+ARGV[0,0] = ["-e","gem 'ZenTest'","-e","load 'autotest'","--"]
+load File.join(File.dirname(__FILE__), "fruby")
