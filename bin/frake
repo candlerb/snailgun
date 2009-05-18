@@ -15,7 +15,5 @@ if File.exist?("config/boot.rb") || File.exist?("config/init.rb")
   $DEFAULT_ENV='test' if ARGV.find { |arg| arg =~ /\b(test|spec)\b/ } || !ARGV.find { |arg| arg !~ /^-/ }
 end
 
-pos = 0
-pos = 1 if ARGV[0] =~ /\A@./
-ARGV[pos,0] = ["-rrake", "-eRake.application.run", "--"]
+ARGV[0,0] = ["-rrake", "-eRake.application.run", "--"]
 load File.join(File.dirname(__FILE__), "fruby")

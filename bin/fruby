@@ -3,9 +3,7 @@
 # This could be rewritten in C for even faster startup
 
 require 'socket'
-if ARGV[0] =~ /\A@/
-  sockname = ARGV.shift[1..-1]
-elsif ENV['SNAILGUN_SOCK']
+if ENV['SNAILGUN_SOCK']
   sockname = ENV['SNAILGUN_SOCK']
 elsif File.directory?('tmp/sockets/snailgun')
   env = ENV['RAILS_ENV'] || ENV['MERB_ENV']
@@ -21,7 +19,7 @@ unless sockname
   STDERR.puts <<EOS
 Unable to find path to snailgun socket.
 - did you run this in a session with a snailgun parent?
-- you can do '#{$0} @/path/to/sock ...'
+- you can do 'SNAILGUN_SOCK=/path/to/sock #{$0} ...'
 EOS
   exit 1
 end
