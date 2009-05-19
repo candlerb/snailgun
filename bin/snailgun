@@ -6,7 +6,7 @@ require 'optparse'
 
 sockpath = nil
 mode = nil
-envs = "test,development"
+envs = "test"
 rake = false
 verbose = false
 
@@ -66,7 +66,7 @@ when :rails
   end
   pids = {}
   fix_rake   # TODO: separate process for rake (but then need to choose right RAILS_ENV)
-  envs.split(/\s*,\s*/).uniq.each do |env|
+  envs.split(/[\s,]+/).uniq.each do |env|
     pids[env] = fork do
       server = Snailgun::Server.new("#{sockdir}/#{env}")
       ENV['RAILS_ENV'] = env
