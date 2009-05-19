@@ -159,3 +159,6 @@ This code is released under the same licence as Ruby itself.
 Author
 ------
 Brian Candler <B.Candler@pobox.com>
+
+Credits:
+Jan X <jan.h.xie@gmail.com>
