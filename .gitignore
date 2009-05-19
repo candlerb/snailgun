@@ -1,5 +1,6 @@
 *~
 *.orig
+*.gem
 tmp
 doc/rdoc
 coverage
