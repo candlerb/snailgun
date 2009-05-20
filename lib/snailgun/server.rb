@@ -92,7 +92,7 @@ module Snailgun
     end
     
     def self.shell
-      system("#{ENV['shell'] || 'bash'} -l")   # TODO: configurable
+      system(ENV['shell'] || 'bash')
     end
 
     # Interactive mode (start a subshell with SNAILGUN_SOCK set up,
