@@ -81,7 +81,7 @@ when :rails
         require 'spec'
         require 'spec/rails'
       end
-      if Rails.configuration.cache_classes
+      if Rails.respond_to?(:configuration) && Rails.configuration.cache_classes
         STDERR.puts <<EOS
 WARNING: Snailgun doesn't work well with `cache_classes`. Strongly recommend
 `config.cache_classes = false` in config/environments/#{env}.rb
