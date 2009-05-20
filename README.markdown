@@ -143,6 +143,8 @@ Other bugs and limitations
 Only works with Linux/BSD systems, due to use of passing open file
 descriptors across a socket.
 
+Ctrl-C doesn't terminate frake processes.
+
 `fruby script/console` doesn't give any speedup, because script/console uses
 exec to invoke irb.  Use the supplied `fconsole` instead.
 
