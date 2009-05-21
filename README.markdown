@@ -128,7 +128,7 @@ You can get noticeably faster startup if you don't use rubygems to invoke
 the programs.  To do this, you can add the binary directory directly into
 the front of your PATH, e.g. for Ubuntu
 
-    PATH=/var/lib/gems/1.8/gems/snailgun-1.0.0/bin:$PATH
+    PATH=/var/lib/gems/1.8/gems/snailgun-1.0.2/bin:$PATH
 
 Alternatively, create a file called `fruby` somewhere early on in your PATH
 (e.g. under `$HOME/bin`), like this:
