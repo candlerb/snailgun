@@ -48,7 +48,7 @@ When using Rails or Merb, snailgun will start a process preloaded for the
 `test` environment only unless told otherwise.
 
 You need to edit `config/environments/test.rb` and set
-`config.cach_classes = false`. This is so that your application classes
+`config.cache_classes = false`. This is so that your application classes
 are loaded each time you run a test, rather than being preloaded into
 the test environment.
 
