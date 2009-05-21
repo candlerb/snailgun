@@ -121,6 +121,11 @@ blowing away your development database.  This actually happened to me while
 developing snailgun.  SO IF YOUR DEVELOPMENT DATABASE CONTAINS USEFUL DATA,
 KEEP IT BACKED UP.
 
+If you run test files individually, it is especially critical that you set
+the correct environment. e.g.
+
+    RAILS_ENV=test fruby -Ilib -Itest test/unit/some_test.rb
+
 Bypassing rubygems
 ------------------
 
