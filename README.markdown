@@ -126,6 +126,12 @@ the correct environment. e.g.
 
     RAILS_ENV=test fruby -Ilib -Itest test/unit/some_test.rb
 
+autotest
+--------
+
+There is some simple support for autotest (from the ZenTest package).
+Just type `fautotest` instead of `autotest` after snailgun has been started.
+
 Bypassing rubygems
 ------------------
 
