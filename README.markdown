@@ -9,8 +9,7 @@ command-line Ruby interpreter is required.
 Installation
 ------------
 
-    sudo gem sources -a http://gems.github.com/
-    sudo gem install candlerb-snailgun
+    sudo gem install snailgun
 
 Or for the latest code, `git clone git://github.com/candlerb/snailgun.git`
 and put the bin directory into your PATH.
@@ -139,7 +138,7 @@ You can get noticeably faster startup if you don't use rubygems to invoke
 the programs.  To do this, you can add the binary directory directly into
 the front of your PATH, e.g. for Ubuntu
 
-    PATH=/var/lib/gems/1.8/gems/snailgun-1.0.2/bin:$PATH
+    PATH=/var/lib/gems/1.8/gems/snailgun-1.0.3/bin:$PATH
 
 Alternatively, create a file called `fruby` somewhere early on in your PATH
 (e.g. under `$HOME/bin`), like this:
