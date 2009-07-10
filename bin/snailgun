@@ -56,7 +56,7 @@ when :ruby
 when :rails
   conf = File.expand_path('config/boot.rb')
   unless File.exist?(conf)
-    raise '#{conf} does not exist, cannot continue'
+    raise "#{conf} does not exist, cannot continue"
   end
   sockdir = File.expand_path('tmp/sockets/snailgun')
   begin
