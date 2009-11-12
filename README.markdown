@@ -125,11 +125,48 @@ the correct environment. e.g.
 
     RAILS_ENV=test fruby -Ilib -Itest test/unit/some_test.rb
 
+Case 4: Rails with cucumber
+---------------------------
+
+Cucumber creates its own Rails environment called "cucumber", so you can
+setup snailgun like this:
+
+    $ snailgun --rails test,cucumber
+
+Then use `frake cucumber` to exercise the features. frake selects the
+"cucumber" environment if run with "cucumber" as an argument.
+
+NOTE: to make your model classes be loaded on each run you need to set
+`config.cache_classes = false` in `config/environments/cucumber.rb`.
+Cucumber will give a big warning saying that this is known to be a
+problem with transactional fixtures. I don't use transactional fixtures
+so this isn't a problem for me.
+
+For a substantial performance boost, remove `:lib=>false` lines from
+`config/environments/cucumber.rb` so that cucumber, webrat, nokogiri etc
+are preloaded.
+
+Smaller performance boosts can be had from further preloading.  For example,
+cucumber makes use of some rspec libraries for diffing even if you're not
+using rspec, so you can preload those. Add something like this to the end of
+`config/environments/cucumber.rb`
+
+    begin
+      require 'spec/expectations'
+      require 'spec/runner/differs/default'
+    rescue LoadError
+    end
+    require 'test_help'
+    require 'test/unit/testresult'
+    require 'active_support/secure_random'
+    require 'active_support/time_with_zone'
+
 autotest
 --------
 
 There is some simple support for autotest (from the ZenTest package).
 Just type `fautotest` instead of `autotest` after snailgun has been started.
+This hasn't been tested for a while.
 
 Bypassing rubygems
 ------------------

@@ -73,6 +73,7 @@ when :rails
       load conf
       require File.expand_path(RAILS_ROOT + '/config/environment')
       # We can get some drastic test speedups by preloading test frameworks
+      # (although user could do that in config/environments/test.rb)
       if env != 'test'
         # do nothing
       elsif File.exist?('test/test_helper.rb')

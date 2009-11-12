@@ -9,10 +9,13 @@ ARGV.each do |arg|
   end
 end
 
-# Make a guess at the correct environment
+# Rails/Merb: make a guess at the correct environment
 if File.exist?("config/boot.rb") || File.exist?("config/init.rb")
-  # Rails: default task is 'test'
-  $DEFAULT_ENV='test' if ARGV.find { |arg| arg =~ /\b(test|spec)\b/ } || !ARGV.find { |arg| arg !~ /^-/ }
+  if ARGV.find { |arg| arg =~ /\bcucumber\b/ }
+    $DEFAULT_ENV='cucumber'
+  elsif ARGV.find { |arg| arg =~ /\b(test|spec)\b/ } || !ARGV.find { |arg| arg !~ /^-/ }
+    $DEFAULT_ENV='test'
+  end
 end
 
 ARGV[0,0] = ["-rrake", "-eRake.application.run", "--"]
