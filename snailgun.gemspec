@@ -1,10 +1,10 @@
 Gem::Specification.new do |s|
   s.name = %q{snailgun}
-  s.version = "1.0.3"
+  s.version = "1.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Candler"]
-  s.date = %q{2009-05-19}
+  s.date = %q{2009-11-12}
   s.description = %q{Snailgun accelerates the startup of Ruby applications which require large numbers of libraries}
   s.email = %q{b.candler@pobox.com}
   s.files = [

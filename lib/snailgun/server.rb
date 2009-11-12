@@ -25,7 +25,7 @@ module Snailgun
 
     def run
       while client = @socket.accept
-        fork do
+        pid = fork do
           begin
             STDIN.reopen(client.recv_io)
             STDOUT.reopen(client.recv_io)
@@ -56,6 +56,7 @@ module Snailgun
             exit 1
           end
         end
+        Process.detach(pid) if pid && pid > 0
         client.close
       end
     ensure
