@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{snailgun}
-  s.version = "1.0.4"
+  s.version = "1.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Brian Candler"]
@@ -8,10 +8,10 @@ Gem::Specification.new do |s|
   s.description = %q{Snailgun accelerates the startup of Ruby applications which require large numbers of libraries}
   s.email = %q{b.candler@pobox.com}
   s.files = [
-    "bin/fautotest", "bin/fconsole", "bin/frake", "bin/fruby", "bin/snailgun",
+    "bin/fautotest", "bin/fconsole", "bin/fcucumber", "bin/frake", "bin/fruby", "bin/snailgun",
     "lib/snailgun/server.rb", "README.markdown",
   ]
-  s.executables = ["fautotest", "fconsole", "frake", "fruby", "snailgun"]
+  s.executables = ["fautotest", "fconsole", "fcucumber", "frake", "fruby", "snailgun"]
   s.extra_rdoc_files = ["README.markdown"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/candlerb/snailgun}

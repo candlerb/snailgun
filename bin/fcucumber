@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+# Copyright (C) Brian Candler 2009. Released under the Ruby licence.
+
+$DEFAULT_ENV='cucumber'
+ARGV[0,0] = ['cucumber']
+load File.join(File.dirname(__FILE__), 'fruby')
