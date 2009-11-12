@@ -91,7 +91,7 @@ EOS
       server.run
     end
   end
-  STDERR.puts "Use 'exit' to terminate snailgun"
+  STDERR.puts "Now entering subshell. Use 'exit' to terminate snailgun"
   Snailgun::Server.shell
   pids.each do |env,pid|
     Process.kill('TERM',pid)
