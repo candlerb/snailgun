@@ -11,6 +11,7 @@ trace_var(:$0) {|val| $PROGRAM_NAME = val} # update for ps
 
 require 'socket'
 require 'optparse'
+require 'shellwords'
 
 module Snailgun
   class Server
@@ -93,7 +94,9 @@ module Snailgun
     end
     
     def self.shell
-      system(ENV['SHELL'] || 'bash')
+      shell_opts = ENV['SNAILGUN_SHELL_OPTS']
+      args = shell_opts ? Shellwords.shellwords(shell_opts) : []
+      system(ENV['SHELL'] || 'bash', *args)
     end
 
     # Interactive mode (start a subshell with SNAILGUN_SOCK set up,
