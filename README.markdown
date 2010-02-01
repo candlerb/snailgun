@@ -210,4 +210,6 @@ Author
 Brian Candler <B.Candler@pobox.com>
 
 Credits:
-Jan X <jan.h.xie@gmail.com>
+
+* Jan X <jan.h.xie@gmail.com>
+* George Ogata <george.ogata@gmail.com>
