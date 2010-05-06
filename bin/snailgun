@@ -1,5 +1,13 @@
 #!/usr/bin/env ruby
 # Copyright (C) Brian Candler 2009. Released under the Ruby licence.
+
+# Turn on copy-on-write garbage collection in REE: see
+# http://www.rubyenterpriseedition.com/documentation.html#_copy_on_write_friendliness
+begin
+  GC.copy_on_write_friendly = true
+rescue NoMethodError
+end
+
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
 require 'snailgun/server'
 require 'optparse'
