@@ -5,5 +5,5 @@
 
 ENV["RAILS_ENV"] = "test"
 Test::Unit.run = true if defined?(Test::Unit) && Test::Unit.respond_to?(:run=)
-ARGV[0,0] = ["-e","gem 'ZenTest'","-e","load 'autotest'","--"]
+ARGV[0,0] = ["-e","gem 'ZenTest'","-e","load Gem.bin_path('ZenTest', 'autotest')","--"]
 load File.join(File.dirname(__FILE__), "fruby")
