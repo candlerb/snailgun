@@ -32,8 +32,9 @@ module Snailgun
             STDOUT.reopen(client.recv_io)
             STDERR.reopen(client.recv_io)
             nbytes = client.read(4).unpack("N").first
-            args, cwd, pgid = Marshal.load(client.read(nbytes))
+            args, env, cwd, pgid = Marshal.load(client.read(nbytes))
             Dir.chdir(cwd)
+            $LOAD_PATH << env['RUBYLIB']
             begin
               Process.setpgid(0, pgid)
             rescue Errno::EPERM
@@ -76,6 +77,11 @@ module Snailgun
         end
         opts.on("-r LIB") do |v|
           require v
+        end
+        # opts.on("-rcatch_exception") do |v|
+        # end
+        opts.on("-KU") do |v|
+          $KCODE = 'u' if RUBY_VERSION < "1.9"
         end
       end.order!(args)
 

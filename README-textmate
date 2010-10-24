@@ -1,0 +1,26 @@
+To get ultra fast CMD-R results in textmate you need to patch the run_script.rb that comes with textmate:
+
+cd /Applications/TextMate.app/Contents/SharedSupport/Bundles/Ruby.tmbundle/Support/RubyMate/
+
+patch -p0 < wherever_snailgun_was_installed/textmate.patch
+
+To run test in never before seen speed simply cd into your rails-app (tested with rails 3) and say:
+
+> snailgun
+
+the output should read something like:
+Now entering subshell for RAILS_ENV=test. Use 'exit' to terminate snailgun
+Server starting for RAILS_ENV=test
+.. some seconds later ...
+Server ready for RAILS_ENV=test
+
+Now you can either use fruby instead of ruby to start tests "by hand":
+
+fruby -Itest test/unit/your_test.rb
+
+or - in TextMate - simply navigate to your_test.rb and hit CMD-R
+
+enjoy!
+
+thieso@gmail.com 20101024 at #rchh
+
