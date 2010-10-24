@@ -10,4 +10,6 @@ ruby extconf.rb
 make clean
 make clean install
 
+Patch was taken from http://redmine.ruby-lang.org/repositories/revision/ruby-19?rev=29242
+
 thieso@gmail.com 20101024
