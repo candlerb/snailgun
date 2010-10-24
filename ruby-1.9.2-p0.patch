@@ -1,0 +1,54 @@
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: Makefile
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: ancdata.o
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: basicsocket.o
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: constants.o
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: constdefs.c
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: constdefs.h
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: extconf.h
+diff -u socket/extconf.rb /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket/extconf.rb
+--- socket/extconf.rb	2010-05-19 15:48:50.000000000 +0200
++++ /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket/extconf.rb	2010-10-24 10:44:17.000000000 +0200
+@@ -117,7 +117,7 @@
+   }
+ end
+ 
+-if (have_func("sendmsg") | have_func("recvmsg")) && /64-darwin/ !~ RUBY_PLATFORM
++if have_func("sendmsg") | have_func("recvmsg")
+   # CMSG_ macros are broken on 64bit darwin, because of use of __DARWIN_ALIGN.
+   have_struct_member('struct msghdr', 'msg_control', ['sys/types.h', 'sys/socket.h'])
+   have_struct_member('struct msghdr', 'msg_accrights', ['sys/types.h', 'sys/socket.h'])
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: init.o
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: ipsocket.o
+Common subdirectories: socket/lib and /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket/lib
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: mkmf.log
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: option.o
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: raddrinfo.o
+diff -u socket/rubysocket.h /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket/rubysocket.h
+--- socket/rubysocket.h	2010-04-28 09:16:30.000000000 +0200
++++ /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket/rubysocket.h	2010-10-24 10:43:51.000000000 +0200
+@@ -138,6 +138,17 @@
+ };
+ #endif
+ 
++#if defined __APPLE__ && defined __MACH__
++/*
++ * CMSG_ macros are broken on 64bit darwin, because __DARWIN_ALIGN
++ * aligns up to __darwin_size_t which is 64bit, but CMSG_DATA is
++ * 32bit-aligned.
++ */
++#undef __DARWIN_ALIGNBYTES
++#define __DARWIN_ALIGNBYTES (sizeof(unsigned int) - 1)
++#endif
++
++
+ #if defined(_AIX)
+ #ifndef CMSG_SPACE
+ # define CMSG_SPACE(len) (_CMSG_ALIGN(sizeof(struct cmsghdr)) + _CMSG_ALIGN(len))
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: socket.bundle
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: socket.o
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: sockssocket.o
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: tcpserver.o
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: tcpsocket.o
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: udpsocket.o
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: unixserver.o
+Only in /Users/thieso/.rvm/src/ruby-1.9.2-p0/ext/socket: unixsocket.o

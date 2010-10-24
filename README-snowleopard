@@ -1,0 +1,13 @@
+If you use ruby-1.9.2-p0 on Snow Leopard snailgun won't work out of the Box!
+
+I have included a small patch to the ruby-sources that make it work:
+
+(this is assuming you use rvm)
+
+cd $HOME/.rvm/src/ruby-1.9.2-p0/ext/socket
+patch -p1 < wherever_snailgun_was_installed/ruby-1.9.2-p0.patch
+ruby extconf.rb
+make clean
+make clean install
+
+thieso@gmail.com 20101024
