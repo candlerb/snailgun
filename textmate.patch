@@ -1,0 +1,25 @@
+--- /Applications/TextMate.app/Contents/SharedSupport/Bundles/Ruby.tmbundle/Support/RubyMate/run_script.rb	2010-10-24 15:18:39.000000000 +0200
++++ /tmp/run_script.rb	2010-10-24 15:18:37.000000000 +0200
+@@ -90,22 +90,6 @@
+   return path, '', path
+ end
+ 
+-def snailgun_socket
+-  Pathname.new(Dir.pwd).ascend do |path|
+-    if File.exists?(path.join("config", "boot.rb"))
+-      if File.exists?(path.join("tmp", "sockets", "snailgun", "test"))
+-        return path.join("tmp", "sockets", "snailgun", "test").to_s
+-      end
+-    end
+-  end
+-  nil
+-end
+-
+-if socket = snailgun_socket
+-  ENV['SNAILGUN_SOCK'] = socket
+-  cmd[0] = 'fruby'
+-end
+-
+ TextMate::Executor.run( cmd, :version_args => ["--version"],
+                              :script_args  => args ) do |line, type|
+   if is_test_script and type == :out
