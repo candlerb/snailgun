@@ -74,33 +74,43 @@ when :rails
   end
   pids = {}
   fix_rake   # TODO: separate process for rake (but then need to choose right RAILS_ENV)
-  envs.split(/[\s,]+/).uniq.each do |env|
+  
+  start_for_envs = envs.split(/[\s,]+/).uniq
+  start_for_envs.each do |env|
     pids[env] = fork do
+      STDERR.puts "Server starting for RAILS_ENV=#{env}"
       server = Snailgun::Server.new("#{sockdir}/#{env}")
       ENV['RAILS_ENV'] = env
       load conf
-      require File.expand_path(RAILS_ROOT + '/config/environment')
+      if File.exist?('./config/environment.rb')
+        require './config/environment.rb'
+      end
       # We can get some drastic test speedups by preloading test frameworks
       # (although user could do that in config/environments/test.rb)
       if env != 'test'
         # do nothing
-      elsif File.exist?('test/test_helper.rb')
-        require 'test_help'
+      elsif File.exist?('./test/test_helper.rb')
+        require './test/test_helper'
       elsif File.exist?('spec/spec_helper.rb')
         require 'spec'
         require 'spec/rails'
       end
       if Rails.respond_to?(:configuration) && Rails.configuration.cache_classes
-        STDERR.puts <<EOS
+        STDERR.puts <<-EOS
 WARNING: Snailgun doesn't work well with `cache_classes`. Strongly recommend
 `config.cache_classes = false` in config/environments/#{env}.rb
 EOS
       end
-      STDERR.puts "Started server for #{env}" if verbose
+      STDERR.puts "Server ready for RAILS_ENV=#{env}"
       server.run
     end
   end
-  STDERR.puts "Now entering subshell. Use 'exit' to terminate snailgun"
+  if start_for_envs.size == 1
+    ENV['RAILS_ENV'] = start_for_envs.first
+    STDERR.puts "Now entering subshell for RAILS_ENV=#{ENV['RAILS_ENV']}. Use 'exit' to terminate snailgun"
+  else
+    STDERR.puts "Now entering subshell Don't forget to set your RAILS_ENV!. Use 'exit' to terminate snailgun"
+  end
   Snailgun::Server.shell
   pids.each do |env,pid|
     Process.kill('TERM',pid)
