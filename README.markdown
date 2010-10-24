@@ -213,3 +213,5 @@ Credits:
 
 * Jan X <jan.h.xie@gmail.com>
 * George Ogata <george.ogata@gmail.com>
+* Niklas Hofer <niklas+dev@lanpartei.de>
+* Thies C. Arntzen <thieso@gmail.com>
