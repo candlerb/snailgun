@@ -28,7 +28,7 @@ server = UNIXSocket.open(sockname)
 server.send_io(STDIN)
 server.send_io(STDOUT)
 server.send_io(STDERR)
-args = Marshal.dump([ARGV, Dir.pwd, Process.getpgrp])
+args = Marshal.dump([ARGV, ENV.to_hash, Dir.pwd, Process.getpgrp])
 server.write [args.size].pack("N")
 server.write args
 begin
