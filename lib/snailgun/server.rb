@@ -27,6 +27,7 @@ module Snailgun
     def run
       while client = @socket.accept
         pid = fork do
+          rubylib = nil
           begin
             STDIN.reopen(client.recv_io)
             STDOUT.reopen(client.recv_io)
@@ -34,7 +35,7 @@ module Snailgun
             nbytes = client.read(4).unpack("N").first
             args, env, cwd, pgid = Marshal.load(client.read(nbytes))
             Dir.chdir(cwd)
-            $LOAD_PATH << env['RUBYLIB']
+            $LOAD_PATH.unshift rubylib if (rubylib = env['RUBYLIB'])
             begin
               Process.setpgid(0, pgid)
             rescue Errno::EPERM
@@ -56,6 +57,8 @@ module Snailgun
           rescue Exception => e
             STDERR.puts "#{e}\n\t#{e.backtrace.join("\n\t")}"
             exit 1
+          ensure
+            $LOAD_PATH.shift if rubylib
           end
         end
         Process.detach(pid) if pid && pid > 0
