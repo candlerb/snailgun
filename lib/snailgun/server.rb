@@ -76,7 +76,9 @@ module Snailgun
           e << v
         end
         opts.on("-I DIR") do |v|
-          $:.unshift v
+          v.split(':').each do |value|
+            $:.unshift value
+          end
         end
         opts.on("-r LIB") do |v|
           require v
