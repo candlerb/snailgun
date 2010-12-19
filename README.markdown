@@ -58,7 +58,7 @@ with `snailgun -v` if you wish to be notified when it is ready.
     $ cd testapp
     $ vi config/environments/test.rb
     ... set config.cache_classes = false
-    $ snailgun
+    $ snailgun -I test
     Now entering subshell. Use 'exit' to terminate snailgun
 
     $ time RAILS_ENV=test fruby script/runner 'puts 1+2'
